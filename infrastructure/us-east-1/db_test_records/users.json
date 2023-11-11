@@ -1,0 +1,16 @@
+[
+    {
+      "userId": "15fe142f-50c8-48d5-9d8a-d45134575e32",
+      "username":"test1",      
+      "name": "Test User 1",
+      "status": "active",
+      "email":"abc@email.com"
+    },
+    {
+        "userId": "b12120f9-33aa-42e5-8aeb-382894ed8245",
+        "username":"test2",      
+        "name": "Test User 2",
+        "status": "active",
+        "email":"abc2@email.com"
+    }
+  ]

@@ -1,0 +1,74 @@
+name: Build and Deploy app
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_push_react_app_east:
+    name: Build and Push React App to S3 East
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Use Node.js 18
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+    - name: Build and Push React App
+      env:
+        CI: ""
+        REACT_APP_API_URL: <app_frontend_url>
+      run: |
+        cd app_files/app_frontend
+        npm ci
+        npm run build
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_MAIN_REGION}}
+    - name: Deploy to S3
+      run: |
+        aws s3 sync app_files/app_frontend/build s3://<app_bucket_name> --delete
+
+  scale_up_down_asg_east:
+    name: Scale up/down ASG East
+    runs-on: ubuntu-latest
+    needs: build_push_react_app_east
+    steps:
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_MAIN_REGION}}
+    - name: Scale up AWS asg
+      run: |
+        aws autoscaling set-desired-capacity --auto-scaling-group-name app-asg --desired-capacity 4 --region us-east-1
+        sleep 300
+    - name: Scale down AWS asg
+      run: |
+        aws autoscaling set-desired-capacity --auto-scaling-group-name app-asg --desired-capacity 2 --region us-east-1
+
+  scale_up_down_asg_dr:
+    name: Scale up/down ASG dr
+    runs-on: ubuntu-latest
+    needs: [build_push_react_app_east, scale_up_down_asg_east]
+    steps:
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_DR_REGION}}
+    - name: Scale up AWS asg
+      run: |
+        aws autoscaling set-desired-capacity --auto-scaling-group-name app-asg --desired-capacity 4 --region us-west-2
+        sleep 300
+    - name: Scale down AWS asg
+      run: |
+        aws autoscaling set-desired-capacity --auto-scaling-group-name app-asg --desired-capacity 2 --region us-west-2
+    
+
+  
