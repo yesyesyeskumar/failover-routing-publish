@@ -125,7 +125,7 @@ resource "aws_lambda_permission" "user_api_lambda_permission" {
 
 resource "aws_api_gateway_domain_name" "app_domain" {
   regional_certificate_arn = var.cert_arn
-  domain_name     = "arn:aws:route53:::hostedzone/Z05777072YIYTEQL0T1RR"
+  domain_name     = "poc.ibmb.equitasbank.com"
   endpoint_configuration {
     types = ["REGIONAL"]
   }
