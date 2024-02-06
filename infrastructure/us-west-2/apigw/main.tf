@@ -126,7 +126,7 @@ resource "aws_lambda_permission" "user_api_lambda_permission" {
 resource "aws_api_gateway_domain_name" "app_domain" {
   regional_certificate_arn = var.cert_arn
   domain_name     = "poc.ibmb.equitasbank.com"
-  regional_certificate_arn = "arn:aws:acm:ap-south-1:804337772667:certificate/0abc90b3-cc35-4f1b-96e4-48a16598fea5"
+
   endpoint_configuration {
     types = ["REGIONAL"]
   }
