@@ -13,13 +13,13 @@ terraform {
     }
   }
 
-   cloud {
-    organization = ""
+  cloud {
+    organization = "Tribles_expriment"
 
     workspaces {
-      name = ""
+      name = "failover-routing-publish-west"
     }
-  }  
+  }    
 
 }
 
