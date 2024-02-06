@@ -1,9 +1,9 @@
 
 
 variable destination_bucket_name {
-  default = ""
+  default = "tribles-arc-poc-primary"
 }
 
 variable source_bucket_arn {
-  default = ""
+  default = "tribles-arc-poc-secondary"
 }
