@@ -27,7 +27,15 @@ provider "aws" {
   region = "us-west-2"
 }
 
+provider "aws" {
+  alias = "dr"
+  region = "us-west-2"
+}
 
+provider "aws" {
+  alias = "main"
+  region = "us-east-1"
+}
 
 
 module "security" {
