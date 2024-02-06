@@ -14,10 +14,10 @@ terraform {
   }
 
    cloud {
-    organization = ""
+    organization = "Tribles_expriment"
 
     workspaces {
-      name = ""
+      name = "failover-routing-publish-east"
     }
   }  
 
